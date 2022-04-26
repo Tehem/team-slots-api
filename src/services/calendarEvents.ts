@@ -59,11 +59,12 @@ const buildShiftEvent = (event: eventProps): calendarEvent => {
   const templateFile = path.join(__dirname, '/../templates/sos-shift.template.json');
   const template = readJSONFile(templateFile, { summary: '', description: '' });
   const start = {
-    dateTime: `${event.startDate}T8:00:00.000Z`,
+    // 7h Summer Time (GMT+2), 8h Winter Time (GMT+1)
+    dateTime: `${event.startDate}T7:00:00.000Z`,
     timeZone: 'Europe/Paris',
   };
   const end = {
-    dateTime: `${event.startDate}T11:00:00.000Z`,
+    dateTime: `${event.startDate}T10:00:00.000Z`,
     timeZone: 'Europe/Paris',
   };
   const recurrence = [getRecurrentRule(event.interval, event.intervalUnit)];

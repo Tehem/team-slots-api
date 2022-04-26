@@ -44,7 +44,14 @@ export const createCaptainShifts = async (client: calendar_v3.Calendar, uuid: st
 };
 
 export const createMemberShifts = async (client: calendar_v3.Calendar, uuid: string, shifts: string[][]) => {
-  let currentDay = DateTime.fromJSDate(new Date()).startOf('week').plus({ week: 1 });
+  let startOfWeekDelay = 0;
+  // if not too much shifts, do not start on monday
+  if (shifts[0].length <= 3) {
+    startOfWeekDelay = 1;
+  }
+
+  let currentDay = DateTime.fromJSDate(new Date()).startOf('week').plus({ week: 1, day: startOfWeekDelay });
+  logger.debug('Start shifts for week on ', { currentDay })
 
   for (const weekShifts of shifts) {
     for (const shift of weekShifts) {
@@ -75,7 +82,8 @@ export const createMemberShifts = async (client: calendar_v3.Calendar, uuid: str
       currentDay = currentDay.plus({ day: 1 });
     }
     //start of next week
-    currentDay = currentDay.startOf('week').plus({ week: 1 });
+    currentDay = currentDay.startOf('week').plus({ week: 1, day: startOfWeekDelay });
+    logger.debug('Start shifts for week on ', { currentDay })
   }
 };
 

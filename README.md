@@ -66,7 +66,7 @@ This will generate a file in the local `batches` directory, that can be used to 
 needed.
 
 ```command
-yarn ts src/scripts/sos-slots.ts
+yarn ts src/scripts/create-sos-shifts.ts
 ```
 
 ## Delete previously created slots
@@ -75,7 +75,7 @@ You will have to provide the batch id returned by the last creation run (it is a
 of a batch file in `batches` directory).
 
 ```command
-yarn ts src/scripts/sos-slots.ts
+yarn ts src/scripts/delete-sos-shifts.ts
 ```
 
 ## API Mode (WIP)

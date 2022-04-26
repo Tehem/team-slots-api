@@ -15,7 +15,7 @@ import readline from 'readline';
 function main() {
   const client = getClient();
   const uuid = uuidv4();
-  const shiftsPerWeek = 4;
+  const shiftsPerWeek = 3;
 
   // captains in the order of creation
   const teamFile = path.join(__dirname, '/../config/team.json');
@@ -33,7 +33,7 @@ function main() {
   console.log('About to create captain shifts: ', captains);
   console.log('About to create shifts: ', shifts);
 
-  rl.question('Do you confirm ? (yes)/no', async (answer) => {
+  rl.question('Do you confirm (yes)/no ? ', async (answer) => {
     rl.close();
     if (answer === 'yes') {
       await createCaptainShifts(client, uuid, captains);
