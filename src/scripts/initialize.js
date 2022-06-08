@@ -1,4 +1,5 @@
 import path from 'path';
+import url from 'url';
 import fs from 'fs';
 import readline from 'readline';
 
@@ -6,6 +7,9 @@ import { google } from 'googleapis';
 
 // it's a console script :)
 /* eslint-disable no-console */
+
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
