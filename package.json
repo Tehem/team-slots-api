@@ -33,7 +33,7 @@
     "express": "4.17.1",
     "googleapis": "^95.0.0",
     "helmet": "^5.0.2",
-    "luxon": "^2.3.0",
+    "luxon": "^2.5.2",
     "sentry": "^0.1.2",
     "uuid": "^8.3.2",
     "winston": "3.3.3",
