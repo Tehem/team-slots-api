@@ -2,7 +2,7 @@
 
 This small project is a tool to create Calendar slots for a team.
 
-This first version allow to create morning duty slots:
+This first version allow to create duty slots:
 
 - Create a week captain to organize shifts and coordinate
 - Create daily shifts with team members
@@ -18,7 +18,7 @@ You need to setup a Google Cloud Platform project with the Google Calendar API e
 an API, refer to [this documentation](https://developers.google.com/workspace/guides/create-project).
 
 This simple app queries Google Calendar API as yourself, so you need to have the authorization to create events and
-query availabilities on all of the targetted people's calendars.
+query availabilities on all the targetted people's calendars.
 
 You can follow the steps described [here](https://github.com/googleapis/google-api-nodejs-client#oauth2-client) to setup
 an OAuth2 client for the application.
@@ -35,21 +35,41 @@ token:
 yarn calendar:init
 ```
 
-You should get a prompt to open an URL like this:
+QUICKFIX (dirty) : if you get an error about not inside a "module", quickly add:
+```command
+  "type": "module",
+```
+to the `package.json`. Remove it afterward.
+
+
+You should get a prompt to open a URL like this:
 
 ```command
   Authorize this app by visiting this url: https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar.readonly&response_type=code&client_id=xxx.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob
   Enter the code from that page here:
 ```
 
-Grant access and paste the provided code in the command line and press enter. Your token will be stored into
-a `token.json` fil in `src/config` and a query to your calendar will be made with it to test it, you should see the
-output.
+Grant access and paste the provided code (you might need to extract it from the url) in the command line and press enter. 
+Your token will be stored into a `token.json` fil in `src/config` and a query to your calendar will be made with it 
+to test it, you should see the output.
 
-### Configure templates & team
+## Configuration
 
 Adapt the templates in the `templates` directory to your needs. Configure your team members by creating
 a `config/team.json` file (you can use the provided example file `team.json.example`).
+
+## Daily shifts
+
+Daily shifts are activated by default but you can choose to disable them by setting the `USE_SHIFTS` env variable
+to 'false'. You can also adapt the number of shifts per week (default = 5) by setting the `SHIFTS_PER_WEEK` env 
+variable value.
+
+### Mentors
+
+You can activate mentors for week captains, by setting `USE_MENTORS` env variable to 'true'. This will require to 
+create a `config/mentors.json` file (you can use the provided example file `mentors.json.example`). It's the same 
+format as the team file, but can be of different size (for instance if you have less mentors than captains, which is
+usually the case).
 
 ### Local environment
 

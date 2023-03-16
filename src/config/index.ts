@@ -20,8 +20,11 @@ type LoggerConfig = {
 };
 
 type ShiftsConfig = {
+  useDailyShifts: boolean;
+  shiftsPerWeek: number;
   calendarSleepTimeMs: number;
   supervisorEmail: string;
+  useMentors: boolean;
 };
 
 type Config = {
@@ -46,7 +49,10 @@ export default {
     dsn: process.env.SENTRY_DSN,
   },
   shifts: {
+    useDailyShifts: process.env.USE_SHIFTS === 'true' || false,
+    shiftsPerWeek: process.env.SHIFTS_PER_WEEK || 5,
     calendarSleepTimeMs: process.env.CALENDAR_SLEEP_TIME_MS || 1500,
     supervisorEmail: process.env.SUPERVISOR_EMAIL,
+    useMentors: process.env.USE_MENTORS === 'true' || false,
   },
 } as Config;

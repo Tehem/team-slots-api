@@ -1,25 +1,35 @@
-import { DateTime, Settings } from 'luxon';
-import { calendar_v3 } from 'googleapis';
+import {DateTime, Settings} from 'luxon';
+import {calendar_v3} from 'googleapis';
 import config from '../config/index';
 import logger from '../lib/logger';
-import { buildEvent } from './calendarEvents';
-import { createMeeting, deleteMeeting } from '../lib/calendar';
-import { readBatchIds } from '../lib/batches';
+import {buildEvent} from './calendarEvents';
+import {createMeeting, deleteMeeting} from '../lib/calendar';
+import {readBatchIds} from '../lib/batches';
 
 Settings.defaultZone = 'utc';
 
-export const createCaptainShifts = async (client: calendar_v3.Calendar, uuid: string, emails: string[]) => {
-  let currentWeek = DateTime.fromJSDate(new Date()).startOf('week').plus({ week: 1 });
+export const createCaptainShifts = async (client: calendar_v3.Calendar, uuid: string, emails: string[], mentors: string[]) => {
+  let currentWeek = DateTime.fromJSDate(new Date()).startOf('week').plus({week: 1});
 
-  for (const captainEmail of emails) {
+  for (const [captainIndex, captainEmail] of emails.entries()) {
     const captainStartDate = currentWeek.toFormat('yyyy-LL-dd');
-    const captainEndDate = currentWeek.plus({ day: 5 }).toFormat('yyyy-LL-dd');
+    const captainEndDate = currentWeek.plus({day: 5}).toFormat('yyyy-LL-dd');
 
     const attendees = [];
-    if (config.shifts.supervisorEmail !== undefined) {
-      attendees.push({ email: config.shifts.supervisorEmail, optional: true });
+    if (config.shifts.supervisorEmail !== undefined && config.shifts.supervisorEmail !== captainEmail) {
+      attendees.push({email: config.shifts.supervisorEmail, optional: true});
     }
-    attendees.push({ email: captainEmail });
+    if (config.shifts.useMentors && mentors.length > 0) {
+      const mentorIndex = captainIndex % mentors.length;
+      const mentor = mentors[mentorIndex];
+      logger.debug('Assigning mentor', {
+        captainEmail,
+        mentorIndex: mentorIndex,
+        mentor,
+      });
+      attendees.push({email: mentor, optional: true});
+    }
+    attendees.push({email: captainEmail});
 
     const captainEvent = buildEvent('sos-captain-shift', {
       startDate: captainStartDate,
@@ -39,7 +49,7 @@ export const createCaptainShifts = async (client: calendar_v3.Calendar, uuid: st
 
     await createMeeting(client, captainEvent, uuid);
     await new Promise((r) => setTimeout(r, config.shifts.calendarSleepTimeMs));
-    currentWeek = currentWeek.plus({ week: 1 });
+    currentWeek = currentWeek.plus({week: 1});
   }
 };
 
@@ -50,8 +60,8 @@ export const createMemberShifts = async (client: calendar_v3.Calendar, uuid: str
     startOfWeekDelay = 1;
   }
 
-  let currentDay = DateTime.fromJSDate(new Date()).startOf('week').plus({ week: 1, day: startOfWeekDelay });
-  logger.debug('Start shifts for week on ', { currentDay })
+  let currentDay = DateTime.fromJSDate(new Date()).startOf('week').plus({week: 1, day: startOfWeekDelay});
+  logger.debug('Start shifts for week on ', {currentDay})
 
   for (const weekShifts of shifts) {
     for (const shift of weekShifts) {
@@ -59,9 +69,9 @@ export const createMemberShifts = async (client: calendar_v3.Calendar, uuid: str
 
       const attendees = [];
       if (config.shifts.supervisorEmail !== undefined) {
-        attendees.push({ email: config.shifts.supervisorEmail, optional: true });
+        attendees.push({email: config.shifts.supervisorEmail, optional: true});
       }
-      attendees.push({ email: shift });
+      attendees.push({email: shift});
 
       const shiftEvent = buildEvent('sos-shift', {
         startDate: shiftDate,
@@ -79,13 +89,35 @@ export const createMemberShifts = async (client: calendar_v3.Calendar, uuid: str
 
       await createMeeting(client, shiftEvent, uuid);
       await new Promise((r) => setTimeout(r, config.shifts.calendarSleepTimeMs));
-      currentDay = currentDay.plus({ day: 1 });
+      currentDay = currentDay.plus({day: 1});
     }
     //start of next week
-    currentDay = currentDay.startOf('week').plus({ week: 1, day: startOfWeekDelay });
-    logger.debug('Start shifts for week on ', { currentDay })
+    currentDay = currentDay.startOf('week').plus({week: 1, day: startOfWeekDelay});
+    logger.debug('Start shifts for week on ', {currentDay})
   }
 };
+
+export const computeCaptainShifts = (emails: string[], mentors: string[]) => {
+  const shifts = [];
+  for (const [captainIndex, captainEmail] of emails.entries()) {
+    const shift: { captain: string, mentor: string } = {captain: '', mentor: ''};
+    shift.captain = captainEmail;
+
+    if (mentors.length > 0) {
+      const mentorIndex = captainIndex % mentors.length;
+      const mentorEmail = mentors[mentorIndex];
+      logger.debug('Assigning mentor', {
+        captainEmail,
+        mentorIndex: mentorIndex,
+        mentorEmail,
+      });
+      shift.mentor = mentorEmail;
+    }
+    shifts.push(shift);
+  }
+
+  return shifts;
+}
 
 export const computeMemberShifts = (emails: string[], shiftsPerWeek = 4): string[][] => {
   const teamSize = emails.length;
@@ -132,7 +164,7 @@ export const computeMemberShifts = (emails: string[], shiftsPerWeek = 4): string
       members = members.filter((m) => m !== lastCaptain);
     }
 
-    logger.debug('Eligible members for a shift', { members });
+    logger.debug('Eligible members for a shift', {members});
     while (plannedShiftsForWeek < shiftsPerWeek) {
       const memberShift = members.shift();
       if (memberShift === undefined) break; // just for TS to stay calm...
@@ -147,15 +179,15 @@ export const computeMemberShifts = (emails: string[], shiftsPerWeek = 4): string
       );
     }
 
-    logger.debug(` *** Week #${iterations + 1} shifts`, { shifts: weekShifts });
-    logger.info(` *** Current counts`, { sortedCounts });
+    logger.debug(` *** Week #${iterations + 1} shifts`, {shifts: weekShifts});
+    logger.info(` *** Current counts`, {sortedCounts});
 
     // update sorted list based on new count for each member
     sortedMembers.sort((a, b) => sortedCounts[sortedMembers.indexOf(a)] - sortedCounts[sortedMembers.indexOf(b)]);
     sortedCounts.sort((a, b) => a - b);
 
     lastCaptain = captain;
-    weeks.push({ captain, shifts: weekShifts });
+    weeks.push({captain, shifts: weekShifts});
 
     iterations += 1;
     // limit the number of computations for large teams or uneven shift count
