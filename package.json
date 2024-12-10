@@ -29,7 +29,7 @@
     "dotenv-flow": "3.2.0",
     "esbuild": "0.14.9",
     "esbuild-register": "3.3.1",
-    "express": "4.20.0",
+    "express": "4.21.2",
     "googleapis": "^95.0.0",
     "helmet": "^5.0.2",
     "luxon": "^3.5.0",
@@ -37,7 +37,7 @@
     "uuid": "^8.3.2",
     "winston": "3.3.3",
     "winston-transport": "4.4.0",
-    "zod": "3.11.6",
+    "zod": "3.22.3",
     "zod-express-middleware": "1.4.0"
   },
   "devDependencies": {
