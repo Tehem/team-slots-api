@@ -35,13 +35,6 @@ token:
 yarn calendar:init
 ```
 
-QUICKFIX (dirty) : if you get an error about not inside a "module", quickly add:
-```command
-  "type": "module",
-```
-to the `package.json`. Remove it afterward.
-
-
 You should get a prompt to open a URL like this:
 
 ```command
