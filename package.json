@@ -29,7 +29,7 @@
     "dotenv-flow": "3.2.0",
     "esbuild": "0.14.9",
     "esbuild-register": "3.3.1",
-    "express": "4.17.1",
+    "express": "4.20.0",
     "googleapis": "^95.0.0",
     "helmet": "^5.0.2",
     "luxon": "^2.3.0",
