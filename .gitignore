@@ -99,10 +99,7 @@ logs/
 .vscode/
 
 # tokens and credentials
-src/config/team.json
-src/config/mentors.json
-src/config/credentials.json
-src/config/token.json
+src/config/*.json
 
 # batch infos
 batches/
