@@ -9,6 +9,24 @@
   "directories": {
     "test": "test"
   },
+  "resolutions": {
+    "node-forge": "^1.4.0",
+    "uuid": "^11.1.1",
+    "jws": "^4.0.1",
+    "path-to-regexp": "^0.1.13",
+    "qs": "^6.15.2",
+    "cookie": "^0.7.0",
+    "send": "^0.19.0",
+    "got": "^11.8.5",
+    "form-data": "^3.0.5",
+    "lodash": "^4.18.0",
+    "js-yaml": "^4.2.0",
+    "minimatch": "^3.1.3",
+    "picomatch": "^2.3.2",
+    "flatted": "^3.4.2",
+    "@babel/core": "^7.29.6",
+    "@tootallnate/once": "^2.0.1"
+  },
   "scripts": {
     "calendar:init": "node --require dotenv-flow/config ./src/scripts/initialize.js",
     "start": "yarn ts .",
@@ -33,8 +51,7 @@
     "googleapis": "^95.0.0",
     "helmet": "^5.0.2",
     "luxon": "^3.5.0",
-    "sentry": "^0.1.2",
-    "uuid": "^8.3.2",
+    "uuid": "^11.1.1",
     "winston": "3.3.3",
     "winston-transport": "4.4.0",
     "zod": "3.22.3",
@@ -49,7 +66,6 @@
     "@types/luxon": "^3.4.2",
     "@types/node": "16",
     "@types/supertest": "2.0.11",
-    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "eslint": "^8.7.0",
