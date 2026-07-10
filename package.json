@@ -4,7 +4,7 @@
   "main": "src/server.ts",
   "private": true,
   "engines": {
-    "node": ">=16.13"
+    "node": ">=18"
   },
   "directories": {
     "test": "test"
@@ -64,7 +64,7 @@
     "@types/gapi.client.calendar": "^3.0.10",
     "@types/jest": "27.4.0",
     "@types/luxon": "^3.4.2",
-    "@types/node": "16",
+    "@types/node": "18",
     "@types/supertest": "2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
