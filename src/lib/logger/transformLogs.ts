@@ -1,4 +1,4 @@
-import { dim } from 'chalk';
+import chalk from 'chalk';
 import { inspect } from 'util';
 import * as winston from 'winston';
 import { prettifyStack } from './prettifyStack';
@@ -48,11 +48,11 @@ export function logToString(log: winston.Logform.TransformableInfo): string {
     }
   });
 
-  const stringifiedMeta = inspect(filteredMeta, { colors: true, depth: 4, showHidden: false });
+  const stringifiedMeta = inspect(filteredMeta, { colors: chalk.level > 0, depth: 4, showHidden: false });
   const metaString = stringifiedMeta.length > 4 ? ` ${stringifiedMeta}` : '';
 
   const errorString = errorMessage ? `\n${errorMessage}` : '';
-  const stackString = stack ? `\n${prettifyStack(stack)}` : '';
+  const stackString = typeof stack === 'string' ? `\n${prettifyStack(stack)}` : '';
 
-  return `[${dim(timestamp)}] ${level}: ${message}${metaString}${errorString}${stackString}`;
+  return `[${chalk.dim(timestamp)}] ${level}: ${message}${metaString}${errorString}${stackString}`;
 }

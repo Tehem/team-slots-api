@@ -34,7 +34,7 @@ export async function postSosShift(req: Request<unknown, unknown, BodyPostSosShi
     const { teamMembers, shiftsPerWeek } = req.body;
     const client = getClient();
 
-    await createCaptainShifts(client, uuid, teamMembers);
+    await createCaptainShifts(client, uuid, teamMembers, []);
 
     const shifts = computeMemberShifts(teamMembers, shiftsPerWeek);
 
